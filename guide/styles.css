@@ -1,0 +1,17 @@
+body {
+    background-color: #111111;
+}
+
+#content {
+    color: white;
+    margin: 10%;
+}
+
+#content > p {
+    text-align: justify;
+}
+
+#content > p > a {
+    color: white; 
+}
+
