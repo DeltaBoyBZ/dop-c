@@ -12,9 +12,9 @@ To start using DOP-C, simply clone the repository,
 
     git clone https://github.com/DeltaBoyBZ/dop-c
     
-Then just make sure the directory `dop-c/include` is in your include path. 
+Then just make sure the directory [`dop-c/include`](include) is in your include path. 
 
-To learn about actually using the library, check out the [DOP-C Guide](guide/introduction.html).
+To learn about actually using the library, check out the [DOP-C Guide](guide/guide.html).
 
 ## Licensing
 See [NOTICE.txt](NOTICE.txt)
@@ -32,4 +32,4 @@ The main points to note are:
    as well as a copy of the [MPLv2](MOZILLA_PUBLIC_LICENSE_V2.txt). 
 
 3. Licensing conditions of the MPLv2 are given on a file-by-file basis. 
-   Hence in particular, a binary compiled from source code including `dopc.hpp` is freely licensable. 
+   Hence in particular, a binary compiled from source code including [`dopc.hpp`](include/dopc/dopc.hpp) is freely licensable. 
