@@ -1,6 +1,9 @@
 # DOP-C : A Guide
 ### Matthew Smith 
 
+A video version of this guide may be found at:
+[https://youtu.be/KlliPAHqISk](https://youtu.be/KlliPAHqISk)
+
 ## Introduction
 DOP-C is a header-only C++ library which makes it easy for developers to create data tables in C++. 
 The idea is in the same vein as [Tabular-C++](https://deltaboybz.github.io/tabular-cpp), but learns from the shortcomings of that project. 
