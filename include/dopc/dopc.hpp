@@ -14,7 +14,7 @@
 #include<string>
 #include<map>
 
-#define DOPC_TABLE(name) inline static dopc::Table;
+#define DOPC_TABLE(name) inline static dopc::Table name;
 #define DOPC_FIELD(name, type, table) inline static dopc::Field<type> name = dopc::Field<type>(&table);
 
 namespace dopc
