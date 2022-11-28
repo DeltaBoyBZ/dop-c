@@ -5,8 +5,7 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at 
  * https://mozilla.org/MPL/2.0/.
 
- */
-#pragma once
+ */ #pragma once
 
 #include<iostream>
 #include<vector> 
@@ -15,10 +14,8 @@
 #include<string>
 #include<map>
 
-#define FIELD_TYPE(type) ((type) NULL)
-#define ARRAY_ELEM(type, field, key) *((type*) field(field->getHostTable()->keyToIndex(key)))
-#define DOPC_ARRAY(type, field) field.getIter<type>()
-
+#define DOPC_TABLE(name) inline static dopc::Table;
+#define DOPC_FIELD(name, type, table) inline static dopc::Field<type> name = dopc::Field<type>(&table);
 
 namespace dopc
 {
@@ -45,6 +42,7 @@ namespace dopc
             std::map<size_t, size_t> keyRows; 
         public:
             size_t keyToIndex(size_t k) { return keyRows[k]; };
+            size_t indexToKey(size_t k) { return keys[k]; };
 
             Table() {};
 
@@ -72,6 +70,7 @@ namespace dopc
                 size_t b = keys.size() - 1; 
                 for(GenericField* field : fields) field->copy(a, b);   
                 keys[a] = keys[b];
+                keys.pop_back();
             }
             
             void addField(GenericField* field)
@@ -136,6 +135,18 @@ namespace dopc
         
         T& operator () (size_t k) { return keyElem(k); }
         T& operator [] (size_t k) { return elem(k); } 
+
+        size_t findFirst(T x)
+        {
+            for(int index = 0; index < numElem; index++)
+            {
+                if(elems[index] == x)
+                {
+                    return hostTable->indexToKey(index);
+                }
+            } 
+            return -1;
+        }
     };
 }
 
