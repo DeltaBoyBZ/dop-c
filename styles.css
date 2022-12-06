@@ -90,3 +90,14 @@ body {
     color: white; 
 }
 
+#dev-home {
+    background-color: #880088; 
+    color: white; 
+    padding: 3vh; 
+    text-decoration: none;
+}
+
+#dev-home:hover {
+    background-color: #440044;
+}
+
