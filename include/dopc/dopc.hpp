@@ -147,6 +147,19 @@ namespace dopc
             } 
             return -1;
         }
+        
+        std::vector<size_t> findAll(T x)
+        {
+            std::vector<size_t> hits = {}; 
+            for(int index = 0; index < numElem; index++)
+            {
+                if(elems[index] == x)
+                {
+                    hits.push_back(hostTable->indexToKey(index));  
+                }
+            }
+            return hits; 
+        }
     };
 }
 
