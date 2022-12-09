@@ -13,6 +13,7 @@
 #include<cstring>
 #include<string>
 #include<map>
+#include<algorithm>
 
 #define DOPC_TABLE(name) inline static dopc::Table name;
 #define DOPC_FIELD(name, type, table) inline static dopc::Field<type> name = dopc::Field<type>(&table);
@@ -25,10 +26,24 @@ namespace dopc
     class Table; 
     
     template <typename T>
+    class Pair
+    {
+        public: 
+        size_t key; 
+        T value; 
+    };
+    
+    template <typename T>
     class FreeFunc
     {
         public:
-        virtual void f(T& val) {}; 
+        virtual void f(T& val) {} 
+    };
+
+    template<typename T>
+    class SortFunc {    
+        public:
+            virtual bool f(Pair<T> a, Pair<T> b) { return 0; }
     };
 
     inline void dummyFree(size_t key) {}
@@ -36,10 +51,10 @@ namespace dopc
     class GenericField
     {
         public: 
-            virtual void copy(size_t a, size_t b){}; 
-            virtual void push(){}; 
-            virtual void pop(){}; 
-            virtual void free(size_t key) {};
+            virtual void copy(size_t a, size_t b){}
+            virtual void push(){} 
+            virtual void pop(){} 
+            virtual void free(size_t key) {}
     };
 
 
@@ -81,6 +96,21 @@ namespace dopc
                 for(GenericField* field : fields) field->copy(a, b);   
                 keys[a] = keys[b];
                 keys.pop_back();
+            }
+
+            void swap(size_t id1, size_t id2)
+            {
+                size_t a = keyToIndex(id1);
+                size_t b = keyToIndex(id2);
+                size_t dummy = this->insert();
+                size_t c = keyToIndex(dummy); 
+                for(GenericField* field : fields)
+                {
+                    field->copy(c, a); 
+                    field->copy(a, b); 
+                    field->copy(b, c); 
+                }
+                this->remove(dummy);
             }
             
             void addField(GenericField* field)
@@ -178,6 +208,28 @@ namespace dopc
             return hits; 
         }
 
+        void sort(SortFunc<T>* func)
+        {
+            //first need to make an array of key-value pairs
+            Pair<T> pairs[numElem]; 
+            for(int i = 0; i < numElem; i++)
+            {
+                pairs[i].key = hostTable->indexToKey(i); 
+                pairs[i].value = elems[i];
+            }
+            //then sort this array
+            std::sort(pairs, pairs + numElem, func->f); 
+            //then reorder the table - this is O(n^2)
+            for(int i = 0; i < numElem; i++)
+            {
+                size_t id = hostTable->indexToKey(i);
+                if(pairs[i].key != id) hostTable->swap(pairs[i].key, id);
+                for(int j = 0; j < numElem; j++)
+                {
+                    if(pairs[j].key == id) pairs[j].key = pairs[i].key;
+                }
+            }
+        }
     };
 
     template <typename T>
@@ -197,6 +249,17 @@ namespace dopc
             void f(T& val) override
             {
                 delete[] val;
+            }
+    };
+
+    template <typename T>
+    class SortAscending : public SortFunc<T>
+    {
+        public:
+            bool f(Pair<T>  a, Pair<T>  b) override
+            {
+                if(a.value < b.value) return true; 
+                return false;
             }
     };
 }
