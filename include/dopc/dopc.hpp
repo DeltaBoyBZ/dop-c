@@ -24,12 +24,22 @@ namespace dopc
     class Field; 
     class Table; 
     
+    template <typename T>
+    class FreeFunc
+    {
+        public:
+        virtual void f(T& val) {}; 
+    };
+
+    inline void dummyFree(size_t key) {}
+
     class GenericField
     {
         public: 
             virtual void copy(size_t a, size_t b){}; 
             virtual void push(){}; 
             virtual void pop(){}; 
+            virtual void free(size_t key) {};
     };
 
 
@@ -88,13 +98,15 @@ namespace dopc
         size_t capacity = 0;
         T* elems = nullptr;
         Table* hostTable = nullptr; 
+        FreeFunc<T> freeFunc;
+        inline static FreeFunc<T> dummyFree = FreeFunc<T>();
         public:
-
-        Field(Table* hostTable, size_t capacity = 32)
+        Field(Table* hostTable, FreeFunc<T> freeFunc = dummyFree, size_t capacity = 32)
         {
             this->hostTable = hostTable;
             this->capacity = capacity; 
             this->hostTable->addField(this); 
+            this->freeFunc = freeFunc;
             elems = (T*) std::malloc(capacity*sizeof(T)); 
         }
 
@@ -132,6 +144,11 @@ namespace dopc
         {
             return ((T*) elems)[k];
         }
+
+        void free(size_t key) override
+        {
+            if(freeFunc != dummyFree) freeFunc(keyElem(key));
+        }
         
         T& operator () (size_t k) { return keyElem(k); }
         T& operator [] (size_t k) { return elem(k); } 
@@ -160,7 +177,27 @@ namespace dopc
             }
             return hits; 
         }
+
+    };
+
+    template <typename T>
+    class SimpleFree : public FreeFunc<T>
+    {
+        public:
+            void f(T& val) override
+            {
+                delete val;
+            }
+    };
+    
+    template <typename T>
+    class ArrayFree : public FreeFunc<T>
+    {
+        public:
+            void f(T& val) override
+            {
+                delete[] val;
+            }
     };
 }
-
 
