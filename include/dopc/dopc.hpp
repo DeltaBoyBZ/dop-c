@@ -98,10 +98,10 @@ namespace dopc
         size_t capacity = 0;
         T* elems = nullptr;
         Table* hostTable = nullptr; 
-        FreeFunc<T> freeFunc;
+        FreeFunc<T>* freeFunc;
         inline static FreeFunc<T> dummyFree = FreeFunc<T>();
         public:
-        Field(Table* hostTable, FreeFunc<T> freeFunc = dummyFree, size_t capacity = 32)
+        Field(Table* hostTable, FreeFunc<T>* freeFunc = &dummyFree, size_t capacity = 32)
         {
             this->hostTable = hostTable;
             this->capacity = capacity; 
@@ -147,7 +147,7 @@ namespace dopc
 
         void free(size_t key) override
         {
-            if(freeFunc != dummyFree) freeFunc(keyElem(key));
+            if(freeFunc != &dummyFree) freeFunc->f(keyElem(key));
         }
         
         T& operator () (size_t k) { return keyElem(k); }
