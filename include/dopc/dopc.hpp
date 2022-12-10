@@ -119,7 +119,7 @@ namespace dopc
         Table* hostTable = nullptr; 
 
         typedef void (* FreeFunc) (T& val); 
-        typedef bool (* SortFunc) (T a, T b); 
+        typedef bool (* SortFunc) (Pair<T> a, Pair<T> b); 
 
         FreeFunc freeFunc = dummyFree<T>; 
         public:
