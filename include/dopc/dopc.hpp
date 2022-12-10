@@ -16,6 +16,7 @@
 #include<string>
 #include<map>
 #include<algorithm>
+#include<compare>
 
 #define DOPC_TABLE(name) inline static dopc::Table name;
 #define DOPC_FIELD(name, type, table) inline static dopc::Field<type> name = dopc::Field<type>(&table);
@@ -34,21 +35,8 @@ namespace dopc
         size_t key; 
         T value; 
     };
-    
-    template <typename T>
-    class FreeFunc
-    {
-        public:
-        virtual void f(T& val) {} 
-    };
 
-    template<typename T>
-    class SortFunc {    
-        public:
-            virtual bool f(Pair<T> a, Pair<T> b) { return 0; }
-    };
-
-    inline void dummyFree(size_t key) {}
+    inline static void dummyFree(size_t key) {}
 
     class GenericField
     {
@@ -64,9 +52,7 @@ namespace dopc
     {
         protected: 
             std::vector<GenericField*> fields = {}; 
-            std::vector<size_t> free = {}; 
-            std::vector<size_t> keys = {}; 
-            std::map<size_t, size_t> keyRows; 
+            std::vector<size_t> free = {}; std::vector<size_t> keys = {}; std::map<size_t, size_t> keyRows; 
         public:
             size_t keyToIndex(size_t k) { return keyRows[k]; };
             size_t indexToKey(size_t k) { return keys[k]; };
@@ -130,10 +116,9 @@ namespace dopc
         size_t capacity = 0;
         T* elems = nullptr;
         Table* hostTable = nullptr; 
-        FreeFunc<T>* freeFunc;
-        inline static FreeFunc<T> dummyFree = FreeFunc<T>();
+        void* freeFunc;
         public:
-        Field(Table* hostTable, FreeFunc<T>* freeFunc = &dummyFree, size_t capacity = 32)
+        Field(Table* hostTable, void* freeFunc = (void*) dummyFree, size_t capacity = 32)
         {
             this->hostTable = hostTable;
             this->capacity = capacity; 
@@ -179,7 +164,7 @@ namespace dopc
 
         void free(size_t key) override
         {
-            if(freeFunc != &dummyFree) freeFunc->f(keyElem(key));
+            if(freeFunc != &dummyFree) freeFunc(keyElem(key));
         }
         
         T& operator () (size_t k) { return keyElem(k); }
@@ -210,7 +195,7 @@ namespace dopc
             return hits; 
         }
 
-        void sort(SortFunc<T>* func)
+        void sort(void* func)
         {
             //first need to make an array of key-value pairs
             Pair<T> pairs[numElem]; 
@@ -220,7 +205,7 @@ namespace dopc
                 pairs[i].value = elems[i];
             }
             //then sort this array
-            std::sort(pairs, pairs + numElem, func->f); 
+            std::sort(pairs, pairs + numElem, func); 
             //then reorder the table - this is O(n^2)
             for(int i = 0; i < numElem; i++)
             {
@@ -235,34 +220,22 @@ namespace dopc
     };
 
     template <typename T>
-    class SimpleFree : public FreeFunc<T>
+    inline static void SimpleFree(T& val) 
     {
-        public:
-            void f(T& val) override
-            {
-                delete val;
-            }
-    };
+        delete val;
+    }
     
     template <typename T>
-    class ArrayFree : public FreeFunc<T>
+    inline static void ArrayFree(T& val) 
     {
-        public:
-            void f(T& val) override
-            {
-                delete[] val;
-            }
-    };
+        delete[] val;
+    }
 
     template <typename T>
-    class SortAscending : public SortFunc<T>
+    inline static bool SortAscending(Pair<T>  a, Pair<T>  b) 
     {
-        public:
-            bool f(Pair<T>  a, Pair<T>  b) override
-            {
-                if(a.value < b.value) return true; 
-                return false;
-            }
-    };
+        if(a.value < b.value) return true; 
+        return false;
+    }
 }
 
