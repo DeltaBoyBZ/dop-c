@@ -169,7 +169,7 @@ namespace dopc
 
         void free(size_t key) override
         {
-            if(freeFunc != dummyFree) *(freeFunc)(keyElem(key));
+            (*freeFunc)(keyElem(key));
         }
         
         T& operator () (size_t k) { return keyElem(k); }
