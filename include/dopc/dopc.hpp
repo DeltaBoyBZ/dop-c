@@ -117,6 +117,9 @@ namespace dopc
         T* elems = nullptr;
         Table* hostTable = nullptr; 
         void* freeFunc;
+
+        typedef void (* FreeFunc) (T& val); 
+
         public:
         Field(Table* hostTable, void* freeFunc = (void*) dummyFree, size_t capacity = 32)
         {
@@ -164,7 +167,7 @@ namespace dopc
 
         void free(size_t key) override
         {
-            if(freeFunc != &dummyFree) freeFunc(keyElem(key));
+            if(freeFunc != (void*)dummyFree) (* (FreeFunc) freeFunc)(keyElem(key));
         }
         
         T& operator () (size_t k) { return keyElem(k); }
