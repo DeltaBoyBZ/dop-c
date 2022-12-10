@@ -36,7 +36,8 @@ namespace dopc
         T value; 
     };
 
-    inline static void dummyFree(size_t key) {}
+    template<typename T> 
+    inline static void dummyFree(T& val) {}
 
     class GenericField
     {
@@ -116,12 +117,13 @@ namespace dopc
         size_t capacity = 0;
         T* elems = nullptr;
         Table* hostTable = nullptr; 
-        void* freeFunc;
 
         typedef void (* FreeFunc) (T& val); 
+        typedef bool (* SortFunc) (T a, T b); 
 
+        FreeFunc freeFunc = dummyFree<T>; 
         public:
-        Field(Table* hostTable, void* freeFunc = (void*) dummyFree, size_t capacity = 32)
+        Field(Table* hostTable, FreeFunc freeFunc = dummyFree, size_t capacity = 32)
         {
             this->hostTable = hostTable;
             this->capacity = capacity; 
@@ -167,7 +169,7 @@ namespace dopc
 
         void free(size_t key) override
         {
-            if(freeFunc != (void*)dummyFree) (* (FreeFunc) freeFunc)(keyElem(key));
+            if(freeFunc != dummyFree) *(freeFunc)(keyElem(key));
         }
         
         T& operator () (size_t k) { return keyElem(k); }
@@ -198,7 +200,7 @@ namespace dopc
             return hits; 
         }
 
-        void sort(void* func)
+        void sort(SortFunc func)
         {
             //first need to make an array of key-value pairs
             Pair<T> pairs[numElem]; 
