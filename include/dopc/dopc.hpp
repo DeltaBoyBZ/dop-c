@@ -54,11 +54,16 @@ namespace dopc
         protected: 
             std::vector<GenericField*> fields = {}; 
             std::vector<size_t> free = {}; std::vector<size_t> keys = {}; std::map<size_t, size_t> keyRows; 
+            bool orderLocked = false; 
         public:
             size_t keyToIndex(size_t k) { return keyRows[k]; };
             size_t indexToKey(size_t k) { return keys[k]; };
 
             Table() {};
+
+            bool isOrderLocked() { return orderLocked; } 
+            void orderLock() { orderLocked = true; }
+            void orderUnlock() { orderLocked = true; }
 
             size_t insert()
             {
@@ -80,6 +85,11 @@ namespace dopc
 
             void remove(size_t id)
             {
+                if(orderLocked)
+                {
+                    std::cerr << "Cannot remove from an order-locked table." << std::endl;
+                    return; 
+                }
                 size_t a = keyToIndex(id); 
                 size_t b = keys.size() - 1; 
                 for(GenericField* field : fields) field->copy(a, b);   
@@ -89,6 +99,11 @@ namespace dopc
 
             void swap(size_t id1, size_t id2)
             {
+                if(orderLocked)
+                {
+                    std::cerr << "Cannot swap within order-locked table." << std::endl;
+                    return; 
+                }
                 size_t a = keyToIndex(id1);
                 size_t b = keyToIndex(id2);
                 size_t dummy = this->insert();
