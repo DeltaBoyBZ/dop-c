@@ -21,8 +21,25 @@
 #define DOPC_TABLE(name) inline static dopc::Table name;
 #define DOPC_FIELD(name, type, table) inline static dopc::Field<type> name = dopc::Field<type>(&table);
 
+#define ORDER_HALT(table) while(table.isOrderLocked()) continue; 
+
 namespace dopc
 {
+
+    // very much unoptimised
+    inline static std::vector<size_t> intersect(std::vector<size_t> a, std::vector<size_t> b)
+    {
+        std::vector<size_t> c = {};
+        for(size_t x : a)
+        {
+            for(size_t y : b)
+            {
+                if(x == y) c.push_back(x); 
+            }
+        }
+        return c;
+    }
+
     class GenericField;
     template<typename T>
     class Field; 
