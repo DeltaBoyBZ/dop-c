@@ -40,6 +40,23 @@ namespace dopc
         return c;
     }
 
+
+    inline static std::vector<size_t> unite(std::vector<size_t> a, std::vector<size_t> b)
+    {
+        std::vector<size_t> c;  
+        for(size_t x : a) c.push_back(x); 
+        for(size_t y : b)
+        {
+            bool degen = false; 
+            for(size_t x : a)
+            {
+                if(x == y) degen = true; 
+            }
+            if(!degen) c.push_back(y);
+        }
+        return c;
+    }
+
     class GenericField;
     template<typename T>
     class Field; 
@@ -152,6 +169,7 @@ namespace dopc
 
         typedef void (* FreeFunc) (T& val); 
         typedef bool (* SortFunc) (Pair<T> a, Pair<T> b); 
+        typedef bool (* FindFunc) (T& val); 
 
         FreeFunc freeFunc = dummyFree<T>; 
         public:
@@ -218,6 +236,15 @@ namespace dopc
             } 
             return -1;
         }
+
+        size_t findFirst(FindFunc f)
+        {
+            for(int index = 0; index < numElem; index++)
+            {
+                if(f(elems[index])) return hostTable->indexToKey(index);
+            }
+            return -1;
+        }
         
         std::vector<size_t> findAll(T x)
         {
@@ -225,6 +252,19 @@ namespace dopc
             for(int index = 0; index < numElem; index++)
             {
                 if(elems[index] == x)
+                {
+                    hits.push_back(hostTable->indexToKey(index));  
+                }
+            }
+            return hits; 
+        }
+
+        std::vector<size_t> findAll(FindFunc f)
+        {
+            std::vector<size_t> hits = {}; 
+            for(int index = 0; index < numElem; index++)
+            {
+                if(f(elems[index]))
                 {
                     hits.push_back(hostTable->indexToKey(index));  
                 }
