@@ -333,7 +333,6 @@ namespace dopc
 
         void sort(SortFunc func)
         {
-            std::cout << numElem << std::endl;
             //first need to make an array of key-value pairs
             Pair<T> pairs[numElem]; 
             for(int i = 0; i < numElem; i++)
