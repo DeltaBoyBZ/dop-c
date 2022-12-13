@@ -278,6 +278,51 @@ namespace dopc
             }
             return -1;
         }
+
+        
+        size_t findFirstIndex(T x, std::vector<size_t> filter = {})
+        {
+            if(filter.empty())
+            {
+                for(int index = 0; index < numElem; index++)
+                {
+                    if(elems[index] == x)
+                    {
+                        return index;
+                    }
+                } 
+            }
+            else
+            {
+                for(size_t key : filter)
+                {
+                    if(keyElem(key) == x)
+                    {
+                        return hostTable->keyToIndex(key);
+                    }
+                }
+            }
+            return -1;
+        }
+
+        size_t findFirstIndex(FindFunc f, std::vector<size_t> filter = {})
+        {
+            if(filter.empty())
+            {
+                for(int index = 0; index < numElem; index++)
+                {
+                    if(f(elems[index])) return index;
+                }
+            }
+            else
+            {
+                for(size_t key : filter)
+                {
+                    if(f(keyElem(key))) return hostTable->keyToIndex(key);
+                }
+            }
+            return -1;
+        }
         
         std::vector<size_t> findAll(T x, std::vector<size_t> filter = {})
         {
