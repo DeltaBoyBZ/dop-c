@@ -349,16 +349,13 @@ namespace dopc
                 size_t id = hostTable->indexToKey(i);
                 if(pairs[i].key != id)
                 {
-                    std::cout << numElem << " --> ";
                     hostTable->swap(pairs[i].key, id);
-                    std::cout << numElem << std::endl;
                 }
                 for(int j = 0; j < numElem; j++)
                 {
                     if(pairs[j].key == id) pairs[j].key = pairs[i].key;
                 }
             }
-            std::cout << numElem << std::endl;
         }
     };
 
