@@ -25,6 +25,14 @@
 
 namespace dopc
 {
+    inline static bool isElement(std::vector<size_t> vec, size_t elem)
+    {
+        for(size_t x : vec)
+        {
+            if(elem == x) return true; 
+        }
+        return false;
+    }
 
     // very much unoptimised
     inline static std::vector<size_t> intersect(std::vector<size_t> a, std::vector<size_t> b)
@@ -39,7 +47,6 @@ namespace dopc
         }
         return c;
     }
-
 
     inline static std::vector<size_t> unite(std::vector<size_t> a, std::vector<size_t> b)
     {
@@ -184,8 +191,7 @@ namespace dopc
 
         Table* getHostTable() { return  hostTable; }; 
 
-        const size_t getNumElem() { return numElem; }
-
+        size_t getNumElem() { return numElem; }
 
         void push() override
         {
@@ -225,48 +231,97 @@ namespace dopc
         T& operator () (size_t k) { return keyElem(k); }
         T& operator [] (size_t k) { return elem(k); } 
 
-        size_t findFirst(T x)
+        size_t findFirst(T x, std::vector<size_t> filter = {})
         {
-            for(int index = 0; index < numElem; index++)
+            if(filter.empty())
             {
-                if(elems[index] == x)
+                for(int index = 0; index < numElem; index++)
                 {
-                    return hostTable->indexToKey(index);
+                    if(elems[index] == x)
+                    {
+                        return hostTable->indexToKey(index);
+                    }
+                } 
+            }
+            else
+            {
+                for(size_t key : filter)
+                {
+                    if(keyElem(key) == x)
+                    {
+                        return key;
+                    }
                 }
-            } 
+            }
             return -1;
         }
 
-        size_t findFirst(FindFunc f)
+        size_t findFirst(FindFunc f, std::vector<size_t> filter = {})
         {
-            for(int index = 0; index < numElem; index++)
+            if(filter.empty())
             {
-                if(f(elems[index])) return hostTable->indexToKey(index);
+                for(int index = 0; index < numElem; index++)
+                {
+                    if(f(elems[index])) return hostTable->indexToKey(index);
+                }
+            }
+            else
+            {
+                for(size_t key : filter)
+                {
+                    if(f(keyElem(key))) return key;
+                }
             }
             return -1;
         }
         
-        std::vector<size_t> findAll(T x)
+        std::vector<size_t> findAll(T x, std::vector<size_t> filter = {})
         {
             std::vector<size_t> hits = {}; 
-            for(int index = 0; index < numElem; index++)
+            if(filter.empty())
             {
-                if(elems[index] == x)
+                for(int index = 0; index < numElem; index++)
                 {
-                    hits.push_back(hostTable->indexToKey(index));  
+                    if(elems[index] == x)
+                    {
+                        hits.push_back(hostTable->indexToKey(index));  
+                    }
+                }
+            }
+            else
+            {
+                for(size_t key : filter)
+                {
+                    if(keyElem(key) == x) 
+                    {
+                        hits.push_back(key); 
+                    }
                 }
             }
             return hits; 
         }
 
-        std::vector<size_t> findAll(FindFunc f)
+        std::vector<size_t> findAll(FindFunc f, std::vector<size_t> filter = {})
         {
             std::vector<size_t> hits = {}; 
-            for(int index = 0; index < numElem; index++)
+            if(filter.empty())
             {
-                if(f(elems[index]))
+                for(int index = 0; index < numElem; index++)
                 {
-                    hits.push_back(hostTable->indexToKey(index));  
+                    if(f(elems[index]))
+                    {
+                        hits.push_back(hostTable->indexToKey(index));  
+                    }
+                }
+            }
+            else
+            {
+                for(size_t key : filter)
+                {
+                    if(f(keyElem(key))) 
+                    {
+                        hits.push_back(key); 
+                    }
                 }
             }
             return hits; 
