@@ -133,7 +133,11 @@ namespace dopc
                 }
                 size_t a = keyToIndex(id); 
                 size_t b = keys.size() - 1; 
-                for(GenericField* field : fields) field->copy(a, b);   
+                for(GenericField* field : fields) 
+                {
+                    field->copy(a, b);   
+                    field->pop();
+                }
                 keys[a] = keys[b];
                 keys.pop_back();
             }
@@ -329,6 +333,7 @@ namespace dopc
 
         void sort(SortFunc func)
         {
+            std::cout << numElem << std::endl;
             //first need to make an array of key-value pairs
             Pair<T> pairs[numElem]; 
             for(int i = 0; i < numElem; i++)
@@ -342,12 +347,18 @@ namespace dopc
             for(int i = 0; i < numElem; i++)
             {
                 size_t id = hostTable->indexToKey(i);
-                if(pairs[i].key != id) hostTable->swap(pairs[i].key, id);
+                if(pairs[i].key != id)
+                {
+                    std::cout << numElem << " --> ";
+                    hostTable->swap(pairs[i].key, id);
+                    std::cout << numElem << std::endl;
+                }
                 for(int j = 0; j < numElem; j++)
                 {
                     if(pairs[j].key == id) pairs[j].key = pairs[i].key;
                 }
             }
+            std::cout << numElem << std::endl;
         }
     };
 
