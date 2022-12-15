@@ -262,7 +262,7 @@ namespace dopc
         void transcribe(GenericField* destField0, size_t destIndex, size_t srcIndex) override
         {
             Field<T>* destField = (Field<T>*) destField0;
-            destField[destField] = (*this)[srcIndex];
+            (*destField)[destIndex] = (*this)[srcIndex];
         }
         
         T& operator () (size_t k) { return keyElem(k); }
@@ -487,31 +487,35 @@ namespace dopc
         }
     };
 
+
+    template<typename T>
     class AdditiveMultiverse
     {
         protected:
             Table& original;
-            size_t count;
-            Table* copies; 
+            size_t count; 
+            std::vector<Table*> copies; 
         public:
-            AdditiveMultiverse(Table& original, size_t count)
+            AdditiveMultiverse(Table& original, size_t count, T* structures, size_t offset)
                 : original(original), count(count)
             {
-                copies = new Table[count];
+                this->copies.reserve(count);
+                for(int i = 0; i < count; i++) copies[i] = (Table*)((size_t)structures + i*sizeof(T) + (size_t)offset);
                 std::vector<GenericField*>& fields = original.getFields();
                 for(int i = 0; i < count; i++)
                 {
-                    copies[i].reserve(original.getKeys().size());
+                    copies[i]->reserve(original.getKeys().size());
                     for(int j = 0; i < original.getFields().size(); i++)
                     {
-                        fields[j]->duplicate(&copies[i], copies[i].getFields()[j]);                        
+                        fields[j]->duplicate(copies[i], copies[i]->getFields()[j]);                        
                     }
                 }
             }
             ~AdditiveMultiverse()
             {
-                delete[] copies;
             }
+            
+
             void collapse()
             {
                 size_t originalNumRows = original.getKeys().size();
@@ -520,13 +524,13 @@ namespace dopc
                 std::vector<GenericField*>& fields = original.getFields();
                 for(int i = 0; i < count; i++)
                 {
-                    size_t copyNumRows = copies[i].getKeys().size(); 
+                    size_t copyNumRows = copies[i]->getKeys().size(); 
                     original.reserve(copyNumRows - originalNumRows); 
                     for(int j = 0; j < copyNumRows; j++)
                     {
                         for(int k = 0; k < original.getFields().size(); k++)
                         {
-                            copies[i].getFields()[k]->transcribe(fields[k], collapseNumRows + j, j); 
+                            copies[i]->getFields()[k]->transcribe(fields[k], collapseNumRows + j, j); 
                         }
                     }
                     collapseNumRows += originalNumRows;
