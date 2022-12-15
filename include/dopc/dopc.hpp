@@ -207,6 +207,7 @@ namespace dopc
             this->capacity = capacity; 
             this->hostTable->addField(this); 
             this->freeFunc = freeFunc;
+            this->numElem = 0;
             elems = (T*) std::malloc(capacity*sizeof(T)); 
         }
 
@@ -500,7 +501,7 @@ namespace dopc
                 : original(original), count(count)
             {
                 this->copies.reserve(count);
-                for(int i = 0; i < count; i++) copies[i] = (Table*)((size_t)structures + i*sizeof(T) + (size_t)offset);
+                for(int i = 0; i < count; i++) copies[i] = *(Table**)((size_t)structures + i*sizeof(T) + (size_t)offset);
                 std::vector<GenericField*>& fields = original.getFields();
                 for(int i = 0; i < count; i++)
                 {
