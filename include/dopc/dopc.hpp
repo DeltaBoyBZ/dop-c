@@ -94,7 +94,9 @@ namespace dopc
     {
         protected: 
             std::vector<GenericField*> fields = {}; 
-            std::vector<size_t> free = {}; std::vector<size_t> keys = {}; std::map<size_t, size_t> keyRows; 
+            std::vector<size_t> free = {}; 
+            std::vector<size_t> keys = {}; 
+            std::map<size_t, size_t> keyRows; 
             bool orderLocked = false; 
         public:
             size_t keyToIndex(size_t k) { return keyRows[k]; };
@@ -105,6 +107,12 @@ namespace dopc
             bool isOrderLocked() { return orderLocked; } 
             void orderLock() { orderLocked = true; }
             void orderUnlock() { orderLocked = true; }
+
+
+            std::vector<size_t>& getKeys()
+            {
+                return keys;
+            }
 
             size_t insert()
             {
@@ -123,6 +131,11 @@ namespace dopc
                 keyRows[id] = keys.size() - 1; 
                 return id; 
             }  
+
+            void reserve(size_t numRows)
+            {
+                for(int i = 0; i < numRows; i++) insert();
+            }
 
             void remove(size_t id)
             {
@@ -376,6 +389,57 @@ namespace dopc
             return hits; 
         }
 
+        std::vector<size_t> findAllIndices(T x, std::vector<size_t> filter = {})
+        {
+            std::vector<size_t> hits = {}; 
+            if(filter.empty())
+            {
+                for(int index = 0; index < numElem; index++)
+                {
+                    if(elems[index] == x)
+                    {
+                        hits.push_back(index);  
+                    }
+                }
+            }
+            else
+            {
+                for(size_t key : filter)
+                {
+                    if(keyElem(key) == x) 
+                    {
+                        hits.push_back(hostTable->keyToIndex(key)); 
+                    }
+                }
+            }
+            return hits; 
+        }
+
+        std::vector<size_t> findAllIndices(FindFunc f, std::vector<size_t> filter = {})
+        {
+            std::vector<size_t> hits = {}; 
+            if(filter.empty())
+            {
+                for(int index = 0; index < numElem; index++)
+                {
+                    if(f(elems[index]))
+                    {
+                        hits.push_back(hostTable->indexToKey(index));  
+                    }
+                }
+            }
+            else
+            {
+                for(size_t key : filter)
+                {
+                    if(f(keyElem(key))) 
+                    {
+                        hits.push_back(key); 
+                    }
+                }
+            }
+            return hits; 
+        }
         void sort(SortFunc func)
         {
             //first need to make an array of key-value pairs
