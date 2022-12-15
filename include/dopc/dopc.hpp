@@ -87,6 +87,8 @@ namespace dopc
             virtual void push(){} 
             virtual void pop(){} 
             virtual void free(size_t key) {}
+            virtual void duplicate(Table* table, GenericField* field) { }
+            virtual void transcribe(GenericField* destField, size_t destIndex, size_t srcIndex) {};
     };
 
 
@@ -108,6 +110,8 @@ namespace dopc
             void orderLock() { orderLocked = true; }
             void orderUnlock() { orderLocked = true; }
 
+
+            std::vector<GenericField*>& getFields() { return fields; }
 
             std::vector<size_t>& getKeys()
             {
@@ -230,6 +234,16 @@ namespace dopc
             elems[a] = elems[b]; 
         }
 
+        void duplicate(GenericField* dest0, GenericField* src0)
+        {
+            Field<T>* dest = (Field<T>*) dest0;
+            Field<T>* src  = (Field<T>*) src0;
+            for(int i = 0; i < this->numElem; i++)
+            {
+                (*dest)[i] = (*src)[i];
+            }
+        }
+
         T& keyElem(size_t k)
         {
             return elem(hostTable->keyToIndex(k));
@@ -243,6 +257,12 @@ namespace dopc
         void free(size_t key) override
         {
             (*freeFunc)(keyElem(key));
+        }
+
+        void transcribe(GenericField* destField0, size_t destIndex, size_t srcIndex) override
+        {
+            Field<T>* destField = (Field<T>*) destField0;
+            destField[destField] = (*this)[srcIndex];
         }
         
         T& operator () (size_t k) { return keyElem(k); }
@@ -465,6 +485,53 @@ namespace dopc
                 }
             }
         }
+    };
+
+    class AdditiveMultiverse
+    {
+        protected:
+            Table& original;
+            size_t count;
+            Table* copies; 
+        public:
+            AdditiveMultiverse(Table& original, size_t count)
+                : original(original), count(count)
+            {
+                copies = new Table[count];
+                std::vector<GenericField*>& fields = original.getFields();
+                for(int i = 0; i < count; i++)
+                {
+                    copies[i].reserve(original.getKeys().size());
+                    for(int j = 0; i < original.getFields().size(); i++)
+                    {
+                        fields[j]->duplicate(&copies[i], copies[i].getFields()[j]);                        
+                    }
+                }
+            }
+            ~AdditiveMultiverse()
+            {
+                delete[] copies;
+            }
+            void collapse()
+            {
+                size_t originalNumRows = original.getKeys().size();
+                //go through each copy and add each of their new rows to the original table
+                size_t collapseNumRows = originalNumRows;
+                std::vector<GenericField*>& fields = original.getFields();
+                for(int i = 0; i < count; i++)
+                {
+                    size_t copyNumRows = copies[i].getKeys().size(); 
+                    original.reserve(copyNumRows - originalNumRows); 
+                    for(int j = 0; j < copyNumRows; j++)
+                    {
+                        for(int k = 0; k < original.getFields().size(); k++)
+                        {
+                            copies[i].getFields()[k]->transcribe(fields[k], collapseNumRows + j, j); 
+                        }
+                    }
+                    collapseNumRows += originalNumRows;
+                } 
+            }
     };
 
     template <typename T>
