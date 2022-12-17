@@ -103,8 +103,11 @@ namespace dopc
             virtual void duplicate(Table* table, GenericField* field) { }
             virtual void transcribe(GenericField* destField, size_t destIndex, size_t srcIndex) {};
             virtual size_t getNumElem() { return 0; } 
+            virtual void setKey(size_t index, size_t val) { }; 
     };
 
+
+    typedef bool (* IndexSortFunc)(size_t a, size_t b); 
 
     class Table
     {
@@ -198,6 +201,33 @@ namespace dopc
             void addField(GenericField* field)
             {
                 fields.push_back(field); 
+            }
+
+            template<typename P>
+            void indexSort(IndexSortFunc func, size_t tableOffset = 0)
+            {
+                //first duplicate the table
+                P duplicate_master;
+                Table* duplicate_table = (Table*)(&duplicate_master + tableOffset);
+                std::vector<GenericField*>& fields = this->getFields();
+                duplicate_table->reserve(this->keys.size());
+                for(int j = 0; j < this->fields.size(); j++)
+                {
+                    fields[j]->duplicate(duplicate_table, duplicate_table->getFields()[j]);                        
+                }
+                //create an ordered list of indicies
+                size_t numRows = this->keys.size();
+                size_t indices[numRows]; 
+                for(int i = 0; i < numRows; i++) indices[i] = i; 
+                std::sort(indices, indices + numRows, func);
+                for(int i = 0; i < numRows; i++)
+                {
+                    for(int j = 0; j < fields.size(); j++)
+                    {
+                        duplicate_table->getFields()[j]->transcribe(fields[j], i, indices[i]);
+                    }
+                    this->keys[i] = duplicate_table->getKeys()[i]; 
+                }
             }
     };
 
