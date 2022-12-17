@@ -25,6 +25,19 @@
 
 namespace dopc
 {
+    class String : public std::string 
+    {
+        public:
+            String() { }
+            String(const char* x) { this->assign(x); }
+
+            void operator = (String& x) { this->assign(x.c_str()); }  
+
+            void operator = (std::string& x) { this->assign(x.c_str()); }
+
+            void operator = (const char* x) { this->assign(x); }
+    };
+
     inline static bool isElement(std::vector<size_t> vec, size_t elem)
     {
         for(size_t x : vec)
@@ -89,6 +102,7 @@ namespace dopc
             virtual void free(size_t key) {}
             virtual void duplicate(Table* table, GenericField* field) { }
             virtual void transcribe(GenericField* destField, size_t destIndex, size_t srcIndex) {};
+            virtual size_t getNumElem() { return 0; } 
     };
 
 
@@ -104,7 +118,9 @@ namespace dopc
             size_t keyToIndex(size_t k) { return keyRows[k]; };
             size_t indexToKey(size_t k) { return keys[k]; };
 
-            Table() {};
+            Table() {
+                keys = {};
+            };
 
             bool isOrderLocked() { return orderLocked; } 
             void orderLock() { orderLocked = true; }
@@ -201,7 +217,7 @@ namespace dopc
 
         FreeFunc freeFunc = dummyFree<T>; 
         public:
-        Field(Table* hostTable, FreeFunc freeFunc = dummyFree, size_t capacity = 32)
+        Field(Table* hostTable = nullptr, FreeFunc freeFunc = dummyFree, size_t capacity = 32)
         {
             this->hostTable = hostTable;
             this->capacity = capacity; 
@@ -213,7 +229,7 @@ namespace dopc
 
         Table* getHostTable() { return  hostTable; }; 
 
-        size_t getNumElem() { return numElem; }
+        size_t getNumElem() override { return numElem; }
 
         void push() override
         {
@@ -501,7 +517,7 @@ namespace dopc
                 : original(original), count(count)
             {
                 this->copies.reserve(count);
-                for(int i = 0; i < count; i++) copies[i] = *(Table**)((size_t)structures + i*sizeof(T) + (size_t)offset);
+                for(int i = 0; i < count; i++) copies[i] = (Table*)((size_t)structures + i*sizeof(T) + (size_t)offset);
                 std::vector<GenericField*>& fields = original.getFields();
                 for(int i = 0; i < count; i++)
                 {
@@ -525,7 +541,7 @@ namespace dopc
                 std::vector<GenericField*>& fields = original.getFields();
                 for(int i = 0; i < count; i++)
                 {
-                    size_t copyNumRows = copies[i]->getKeys().size(); 
+                    size_t copyNumRows = copies[i]->getKeys().size();
                     original.reserve(copyNumRows - originalNumRows); 
                     for(int j = 0; j < copyNumRows; j++)
                     {
