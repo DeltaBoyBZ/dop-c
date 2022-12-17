@@ -522,7 +522,7 @@ namespace dopc
                 for(int i = 0; i < count; i++)
                 {
                     copies[i]->reserve(original.getKeys().size());
-                    for(int j = 0; i < original.getFields().size(); i++)
+                    for(int j = 0; j < original.getFields().size(); j++)
                     {
                         fields[j]->duplicate(copies[i], copies[i]->getFields()[j]);                        
                     }
