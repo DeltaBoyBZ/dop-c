@@ -100,7 +100,7 @@ namespace dopc
             virtual void push(){} 
             virtual void pop(){} 
             virtual void free(size_t key) {}
-            virtual void duplicate(Table* table, GenericField* field) { }
+            virtual void duplicate(GenericField* destField) { }
             virtual void transcribe(GenericField* destField, size_t destIndex, size_t srcIndex) {};
             virtual size_t getNumElem() { return 0; } 
             virtual void setKey(size_t index, size_t val) { }; 
@@ -213,7 +213,7 @@ namespace dopc
                 duplicate_table->reserve(this->keys.size());
                 for(int j = 0; j < this->fields.size(); j++)
                 {
-                    fields[j]->duplicate(duplicate_table, duplicate_table->getFields()[j]);                        
+                    fields[j]->duplicate(duplicate_table->getFields()[j]);                        
                 }
                 //create an ordered list of indicies
                 size_t numRows = this->keys.size();
@@ -281,13 +281,12 @@ namespace dopc
             elems[a] = elems[b]; 
         }
 
-        void duplicate(GenericField* dest0, GenericField* src0)
+        void duplicate(GenericField* dest0) override
         {
             Field<T>* dest = (Field<T>*) dest0;
-            Field<T>* src  = (Field<T>*) src0;
             for(int i = 0; i < this->numElem; i++)
             {
-                (*dest)[i] = (*src)[i];
+                (*dest)[i] = (*this)[i];
             }
         }
 
@@ -554,7 +553,7 @@ namespace dopc
                     copies[i]->reserve(original.getKeys().size());
                     for(int j = 0; j < original.getFields().size(); j++)
                     {
-                        fields[j]->duplicate(copies[i], copies[i]->getFields()[j]);                        
+                        fields[j]->duplicate(copies[i]->getFields()[j]);                        
                     }
                 }
             }
@@ -565,8 +564,7 @@ namespace dopc
 
             void collapse()
             {
-                size_t originalNumRows = original.getKeys().size();
-                //go through each copy and add each of their new rows to the original table
+                size_t originalNumRows = original.getKeys().size(); //go through each copy and add each of their new rows to the original table
                 size_t collapseNumRows = originalNumRows;
                 std::vector<GenericField*>& fields = original.getFields();
                 for(int i = 0; i < count; i++)
