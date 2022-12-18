@@ -1,0 +1,65 @@
+<html>
+    <head><link rel="stylesheet" href="http://deltaboybz.github.io/dop-c/guide/css/global.css">
+<link rel="stylesheet" href="http://deltaboybz.github.io/dop-c/guide/css/chapter.css">
+    </head>
+    <body>
+    <div id="title-div">
+        <h1> DOP-C Programming Guide </h1>
+        <h2> Inserting and Removing Rows </h2> 
+    </div>
+    <div id="logo-div">
+        <a href="https://deltaboybz.github.io/dop-c">
+            <img id="tabi-logo" src="http://deltaboybz.github.io/dop-c/guide/img/logo.png ">
+        </a>
+    </div>
+    <div id="menu-div">
+        <hr class="toc"> 
+        
+        <a class="toc" href="/dop-c/guide/chapters/introduction"><div class="toc"><h3 class="toc">Introduction</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/getting-started"><div class="toc"><h3 class="toc">Getting Started</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/constructing"><div class="toc"><h3 class="toc">Constructing Tables</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/inserting"><div class="toc"><h3 class="toc">Inserting and Removing Rows</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/finding"><div class="toc"><h3 class="toc">Finding Values</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/sorting"><div class="toc"><h3 class="toc">Sorting Rows</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/multiverses"><div class="toc"><h3 class="toc">Multiverses</h3></div></a></li>
+        <hr class="toc">
+        
+    </div>
+    <div id="text-div">
+    <p>All data in a DOP-C table belongs to a row with a unique ID.
+These rows must be explicitly inserted by code,
+and may be removed at any time.
+The row ID does not necessarily correspond to the row index, that being the physical position of the row in memory.</p>
+<h2 id="inserting-rows-and-modifying-elements">Inserting Rows and Modifying Elements</h2>
+<p>To insert a row in a given table,
+simply use the <code>Table::insert()</code> method.</p>
+<pre><code>Table table; 
+size_t id = table.insert();
+</code></pre>
+<p>The <code>Table::insert()</code> method returns the ID of the freshly inserted row.
+This ID can be used to modify and reference the row elements.</p>
+<pre><code>Field&lt;int&gt; a(&amp;table); 
+a(id) = 69; 
+std::cout &lt;&lt; a(id) &lt;&lt; std::endl;
+</code></pre>
+<h2 id="removing-rows">Removing Rows</h2>
+<p>To remove a row, we need its ID.</p>
+<pre><code>table.remove(id); 
+</code></pre>
+<p>After the row is removed, we cannot in principle reference the row elements any longer.</p>
+
+    </div>
+    </body>
+</html>

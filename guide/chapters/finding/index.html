@@ -1,0 +1,74 @@
+<html>
+    <head><link rel="stylesheet" href="http://deltaboybz.github.io/dop-c/guide/css/global.css">
+<link rel="stylesheet" href="http://deltaboybz.github.io/dop-c/guide/css/chapter.css">
+    </head>
+    <body>
+    <div id="title-div">
+        <h1> DOP-C Programming Guide </h1>
+        <h2> Finding Values </h2> 
+    </div>
+    <div id="logo-div">
+        <a href="https://deltaboybz.github.io/dop-c">
+            <img id="tabi-logo" src="http://deltaboybz.github.io/dop-c/guide/img/logo.png ">
+        </a>
+    </div>
+    <div id="menu-div">
+        <hr class="toc"> 
+        
+        <a class="toc" href="/dop-c/guide/chapters/introduction"><div class="toc"><h3 class="toc">Introduction</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/getting-started"><div class="toc"><h3 class="toc">Getting Started</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/constructing"><div class="toc"><h3 class="toc">Constructing Tables</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/inserting"><div class="toc"><h3 class="toc">Inserting and Removing Rows</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/finding"><div class="toc"><h3 class="toc">Finding Values</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/sorting"><div class="toc"><h3 class="toc">Sorting Rows</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/multiverses"><div class="toc"><h3 class="toc">Multiverses</h3></div></a></li>
+        <hr class="toc">
+        
+    </div>
+    <div id="text-div">
+    <p>Sometimes we want to find the rows in which the fields take on particular values.</p>
+<h2 id="searching-for-the-first-occurence">Searching for the First Occurence</h2>
+<p>Suppose we have a table named <code>table</code> which has an <code>int</code> field <code>a</code>.
+We want to find out the ID of the first row by ID in which the value in <code>a</code> is <code>10</code>.
+We should use:</p>
+<pre><code>size_t firstRow = a.findFirst(10); 
+</code></pre>
+<p>If instead we want to find the index, we should use:</p>
+<pre><code>size_t firstIndex = a.findFirstIndex(10);
+</code></pre>
+<p>Sometimes we want a more complex criteria by which we should select rows.
+For this, we can pass a boolean function.</p>
+<pre><code>bool criteria(int&amp; a)
+{
+    if(a &gt; 10) return true; 
+    return false;
+}
+
+void foo()
+{
+    size_t firstRow = Data::a-&gt;findFirst(criteria);
+}
+</code></pre>
+<p>If ever any of these searches fail, the methods return <code>-1</code>.</p>
+<h2 id="searching-for-all-occurences">Searching for all Occurences</h2>
+<p>For each of the methods in the last section,
+there is a corresponding method to find all occurences.
+These return a vector of results. For example:</p>
+<pre><code>std::vector&lt;size_t&gt; allRows = a.findAll(10); 
+</code></pre>
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,79 @@
+<html>
+    <head><link rel="stylesheet" href="http://deltaboybz.github.io/dop-c/guide/css/global.css">
+<link rel="stylesheet" href="http://deltaboybz.github.io/dop-c/guide/css/chapter.css">
+    </head>
+    <body>
+    <div id="title-div">
+        <h1> DOP-C Programming Guide </h1>
+        <h2> Sorting Rows </h2> 
+    </div>
+    <div id="logo-div">
+        <a href="https://deltaboybz.github.io/dop-c">
+            <img id="tabi-logo" src="http://deltaboybz.github.io/dop-c/guide/img/logo.png ">
+        </a>
+    </div>
+    <div id="menu-div">
+        <hr class="toc"> 
+        
+        <a class="toc" href="/dop-c/guide/chapters/introduction"><div class="toc"><h3 class="toc">Introduction</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/getting-started"><div class="toc"><h3 class="toc">Getting Started</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/constructing"><div class="toc"><h3 class="toc">Constructing Tables</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/inserting"><div class="toc"><h3 class="toc">Inserting and Removing Rows</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/finding"><div class="toc"><h3 class="toc">Finding Values</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/sorting"><div class="toc"><h3 class="toc">Sorting Rows</h3></div></a></li>
+        <hr class="toc">
+        
+        <a class="toc" href="/dop-c/guide/chapters/multiverses"><div class="toc"><h3 class="toc">Multiverses</h3></div></a></li>
+        <hr class="toc">
+        
+    </div>
+    <div id="text-div">
+    <p>For operations on a large portion of the table&rsquo;s data,
+it can be useful to first sort the rows.<br>
+This sorting can either be done according to a single field,
+or according to the values in the entire row.</p>
+<h2 id="sorting-by-a-field">Sorting by a Field</h2>
+<p>To sort by a field, we use the <code>Field&lt;T&gt;::sort</code> method.
+This method accepts a function as an argument.
+This function should take two references to the type <code>T</code> and return a <code>bool</code>.
+This return value should be <code>true</code> if the references are in the correct order, and <code>false</code> otherwise.
+You can make your own function, but <code>dopc.hpp</code> contains the <code>SortAscending&lt;T&gt;</code> function as a convenient example.</p>
+<pre><code>dopc::Table table; 
+dopc::Field&lt;int&gt; a(&amp;table); 
+/*
+do whatever
+*/
+a.sort(dopc::SortAscending&lt;int&gt;); 
+</code></pre>
+<p>When sorting this way, other fields are also affected.</p>
+<h2 id="sorting-by-the-entire-row">Sorting by the Entire Row</h2>
+<p>Some sorting rules depend on multiple fields.
+So we can make a function which takes two indices and returns a `bool``.</p>
+<pre><code>bool rule(size_t a, size_t b)
+{
+    /*
+    encode the rule here
+    */
+}
+
+void foo()
+{
+    Data::table.indexSort(rule);
+}
+</code></pre>
+<p>The rule can of course use the indices whichever way it chooses.
+It is expected however, that these indices will be used to refer to table elements.</p>
+
+    </div>
+    </body>
+</html>
