@@ -2,9 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on DOP-C Programming Guide</title>
-    <link>http://deltaboybz.github.io/dop-c/guide/tags/</link>
+    <link>https://deltaboybz.github.io/dop-c/guide/tags/</link>
     <description>Recent content in Tags on DOP-C Programming Guide</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-uk</language><atom:link href="http://deltaboybz.github.io/dop-c/guide/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-uk</language><atom:link href="https://deltaboybz.github.io/dop-c/guide/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

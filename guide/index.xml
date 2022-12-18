@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Home on DOP-C Programming Guide</title>
-    <link>http://deltaboybz.github.io/dop-c/guide/</link>
+    <link>https://deltaboybz.github.io/dop-c/guide/</link>
     <description>Recent content in Home on DOP-C Programming Guide</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-uk</language>
-    <lastBuildDate>Sat, 17 Dec 2022 07:56:41 +0000</lastBuildDate><atom:link href="http://deltaboybz.github.io/dop-c/guide/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 17 Dec 2022 07:56:41 +0000</lastBuildDate><atom:link href="https://deltaboybz.github.io/dop-c/guide/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Getting Started</title>
-      <link>http://deltaboybz.github.io/dop-c/guide/chapters/getting-started/</link>
+      <link>https://deltaboybz.github.io/dop-c/guide/chapters/getting-started/</link>
       <pubDate>Sun, 18 Dec 2022 15:19:15 +0000</pubDate>
       
-      <guid>http://deltaboybz.github.io/dop-c/guide/chapters/getting-started/</guid>
+      <guid>https://deltaboybz.github.io/dop-c/guide/chapters/getting-started/</guid>
       <description>Getting started with DOP-C is as easy as obtaining a copy of the files.
 git clone https://github.com/DeltaBoyBZ/dop-c The directory structure should be something like this:
 dop-c ├── include │ └── dopc │ └── dopc.hpp ├── MOZILLA_PUBLIC_LICENSE_V2.txt ├── NOTICE.txt └── README.md To use DOP-C in your own projects, simply make sure the directory dop-c/include is in the include path of your build system.</description>
@@ -20,20 +20,20 @@ dop-c ├── include │ └── dopc │ └── dopc.hpp ├── MO
     
     <item>
       <title>Multiverses</title>
-      <link>http://deltaboybz.github.io/dop-c/guide/chapters/multiverses/</link>
+      <link>https://deltaboybz.github.io/dop-c/guide/chapters/multiverses/</link>
       <pubDate>Sun, 18 Dec 2022 15:04:36 +0000</pubDate>
       
-      <guid>http://deltaboybz.github.io/dop-c/guide/chapters/multiverses/</guid>
+      <guid>https://deltaboybz.github.io/dop-c/guide/chapters/multiverses/</guid>
       <description>Sometimes we want our table to be editable by more than one process. Doing this naively however will lead to memory races, which is never good. DOP-C therefore employs the concept of a multiverse. By this, we mean the creation of many versions of a table that can be separately edited. These copies can be collapsed later back into the original.
 Creating a Multiverse In order to create a multiverse, we need a table prototype.</description>
     </item>
     
     <item>
       <title>Sorting Rows</title>
-      <link>http://deltaboybz.github.io/dop-c/guide/chapters/sorting/</link>
+      <link>https://deltaboybz.github.io/dop-c/guide/chapters/sorting/</link>
       <pubDate>Sun, 18 Dec 2022 14:20:40 +0000</pubDate>
       
-      <guid>http://deltaboybz.github.io/dop-c/guide/chapters/sorting/</guid>
+      <guid>https://deltaboybz.github.io/dop-c/guide/chapters/sorting/</guid>
       <description>For operations on a large portion of the table&amp;rsquo;s data, it can be useful to first sort the rows.
 This sorting can either be done according to a single field, or according to the values in the entire row.
 Sorting by a Field To sort by a field, we use the Field&amp;lt;T&amp;gt;::sort method. This method accepts a function as an argument. This function should take two references to the type T and return a bool.</description>
@@ -41,10 +41,10 @@ Sorting by a Field To sort by a field, we use the Field&amp;lt;T&amp;gt;::sort m
     
     <item>
       <title>Finding Values</title>
-      <link>http://deltaboybz.github.io/dop-c/guide/chapters/finding/</link>
+      <link>https://deltaboybz.github.io/dop-c/guide/chapters/finding/</link>
       <pubDate>Sun, 18 Dec 2022 13:59:36 +0000</pubDate>
       
-      <guid>http://deltaboybz.github.io/dop-c/guide/chapters/finding/</guid>
+      <guid>https://deltaboybz.github.io/dop-c/guide/chapters/finding/</guid>
       <description>Sometimes we want to find the rows in which the fields take on particular values.
 Searching for the First Occurence Suppose we have a table named table which has an int field a. We want to find out the ID of the first row by ID in which the value in a is 10. We should use:
 size_t firstRow = a.findFirst(10); If instead we want to find the index, we should use:</description>
@@ -52,10 +52,10 @@ size_t firstRow = a.findFirst(10); If instead we want to find the index, we shou
     
     <item>
       <title>Inserting and Removing Rows</title>
-      <link>http://deltaboybz.github.io/dop-c/guide/chapters/inserting/</link>
+      <link>https://deltaboybz.github.io/dop-c/guide/chapters/inserting/</link>
       <pubDate>Sun, 18 Dec 2022 13:45:37 +0000</pubDate>
       
-      <guid>http://deltaboybz.github.io/dop-c/guide/chapters/inserting/</guid>
+      <guid>https://deltaboybz.github.io/dop-c/guide/chapters/inserting/</guid>
       <description>All data in a DOP-C table belongs to a row with a unique ID. These rows must be explicitly inserted by code, and may be removed at any time. The row ID does not necessarily correspond to the row index, that being the physical position of the row in memory.
 Inserting Rows and Modifying Elements To insert a row in a given table, simply use the Table::insert() method.
 Table table; size_t id = table.</description>
@@ -63,20 +63,20 @@ Table table; size_t id = table.</description>
     
     <item>
       <title>Constructing</title>
-      <link>http://deltaboybz.github.io/dop-c/guide/chapters/constructing/</link>
+      <link>https://deltaboybz.github.io/dop-c/guide/chapters/constructing/</link>
       <pubDate>Sat, 17 Dec 2022 08:28:33 +0000</pubDate>
       
-      <guid>http://deltaboybz.github.io/dop-c/guide/chapters/constructing/</guid>
+      <guid>https://deltaboybz.github.io/dop-c/guide/chapters/constructing/</guid>
       <description>Before we can use tables, we need to make them. Tables are constructed using two classes:
 The Table class The Field class The Table class represents the data table at large. Tables consists of columns or fields. This is what the Field class represents. DOP-C is designed for us to declare tables and fields separately, so that we may reference fields directly (as opposed to calling a std::map for example).</description>
     </item>
     
     <item>
       <title>Introduction</title>
-      <link>http://deltaboybz.github.io/dop-c/guide/chapters/introduction/</link>
+      <link>https://deltaboybz.github.io/dop-c/guide/chapters/introduction/</link>
       <pubDate>Sat, 17 Dec 2022 07:58:52 +0000</pubDate>
       
-      <guid>http://deltaboybz.github.io/dop-c/guide/chapters/introduction/</guid>
+      <guid>https://deltaboybz.github.io/dop-c/guide/chapters/introduction/</guid>
       <description>DOP-C (pronounced &amp;ldquo;dope-see&amp;rdquo;) is a header-only library for C++, allowing for the creation and manipulation of column based data tables. DOP-C was created for the purpose of having an easy way to create table-based relational models in C++. This is for the benefit of programmers who want to try more data-oriented approaches to software development.
 That all said, DOP-C should be suitable for any application which makes use of data tables in any context.</description>
     </item>
