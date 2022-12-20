@@ -58,17 +58,12 @@ In practice however, the author advises the pattern shown in the following examp
         {
             public:
                 dopc::Table table; 
-                dopc::Field&lt;int&gt;* a; 
-                dopc::Field&lt;float&gt;* b;  
+                dopc::Field&lt;int&gt; a; 
+                dopc::Field&lt;float&gt; b;  
                 Proto()
                 {
-                    a = new dopc::Field&lt;int&gt;(&amp;table);
-                    b = new dopc::Field&lt;float&gt;(&amp;table);
-                }
-                ~Proto()
-                {
-                    delete a; 
-                    delete b;
+                    a.init(&amp;table);
+                    b.init(&amp;table);
                 }
         };
         
