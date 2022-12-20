@@ -249,12 +249,18 @@ namespace dopc
         public:
         Field(Table* hostTable = nullptr, FreeFunc freeFunc = dummyFree, size_t capacity = 32)
         {
-            this->hostTable = hostTable;
+            this->init(hostTable, freeFunc, capacity); 
+        }
+
+        void init(Table* hostTable = nullptr, FreeFunc freeFunc = dummyFree, size_t capacity = 32)
+        {
+            this->hostTable = hostTable; 
             this->capacity = capacity; 
-            this->hostTable->addField(this); 
+            if(this->hostTable) this->hostTable->addField(this);
             this->freeFunc = freeFunc;
             this->numElem = 0;
-            elems = (T*) std::malloc(capacity*sizeof(T)); 
+            if(elems) elems = (T*) std::malloc(capacity*sizeof(T)); 
+            else elems = (T*) std::realloc(elems, capacity*sizeof(T)); 
         }
 
         Table* getHostTable() { return  hostTable; }; 
